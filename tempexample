@@ -1,0 +1,40 @@
+from tkinter import *
+import serial
+
+class SerialImport:
+
+    def __init__(self, master): #master imports the root window
+
+        self.printButton = Button(text="Test GUI response", command=self.printMessage)
+        self.printButton.grid(row=0)
+
+        self.openButton = Button(text="Open Serial Port", command=self.openPort)
+        self.openButton.grid(row=1)
+
+        self.closeButton = Button(text="Close Serial Port", command=self.closePort)
+        self.closeButton.grid(row=2)
+
+        self.updateButton = Button(text="Read and Print Data", command=self.update)
+        self.updateButton.grid(row=3)
+
+    def printMessage(self):
+        print("GUI does respond!")
+
+    def openPort(self):
+        self.arduinoSerialData = serial.Serial('com4', 115200)
+
+    def closePort(self):
+        self.arduinoSerialData.close()
+
+    def update(self):
+        while(1==1):
+            if (self.arduinoSerialData.inWaiting()>0):
+                myData = self.arduinoSerialData.readline()
+                self.temperature = float(myData)
+                print(self.temperature)
+                root.after(1000, self.update)
+                break
+
+root = Tk()
+s = SerialImport(root) #root gets treated as master in SerialImport class
+root.mainloop()
